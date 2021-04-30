@@ -1,0 +1,172 @@
+{
+    "menu":[
+        {
+            "id": 1,
+            "type":"south",
+            "item":"Ghee Dosa",
+            "price":6
+
+        },
+        {
+            "id": 2,
+            "type":"south",
+            "item":"Masala Dosa",
+            "price":8
+
+        },
+        {
+            "id": 3,
+            "type":"south",
+            "item":"Plain Dosa",
+            "price":5
+
+        },
+        {
+            "id": 4,
+            "type":"south",
+            "item":"Kerala Poratta",
+            "price":2
+
+        },
+        {
+            "id": 5,
+            "type":"south",
+            "item":"Beef Fry",
+            "price":8
+
+        },
+        {
+            "id": 6,
+            "type":"south",
+            "item":"Biriyani",
+            "price":5
+
+        },
+        {
+            "id": 7,
+            "type":"north",
+            "item":"Naan",
+            "price":2
+
+        },
+        {
+            "id": 8,
+            "type":"north",
+            "item":"Shahi Panner",
+            "price":8
+
+        },
+        {
+            "id": 9,
+            "type":"north",
+            "item":"Mughalai Chicken",
+            "price":9
+
+        },
+        {
+            "id": 10,
+            "type":"north",
+            "item":"Malai Kofta",
+            "price":8
+
+        },
+        {
+            "id": 11,
+            "type":"north",
+            "item":"Panner Platter",
+            "price":8
+
+        },
+        {
+            "id": 12,
+            "type":"north",
+            "item":"Lacha Paratha",
+            "price":4
+
+        },
+        {
+            "id": 13,
+            "type":"western",
+            "item":"Kachori",
+            "price":3
+
+        },
+        {
+            "id": 14,
+            "type":"western",
+            "item":"Zunka Bhakri",
+            "price":8
+
+        },
+        {
+            "id": 15,
+            "type":"western",
+            "item":"Methi ",
+            "price":5
+
+        },
+        {
+            "id": 16,
+            "type":"western",
+            "item":"Shrikhand",
+            "price":6
+
+        },
+        {
+            "id": 17,
+            "type":"western",
+            "item":"Dhokla",
+            "price":8
+
+        },
+        {
+            "id": 18,
+            "type":"western",
+            "item":"Ghewra",
+            "price":5
+
+        },
+        {
+            "id": 19,
+            "type":"eastern",
+            "item":"Pitha",
+            "price":6
+
+        },
+        {
+            "id": 20,
+            "type":"eastern",
+            "item":"Bihari Kebab",
+            "price":8
+
+        },
+        {
+            "id": 21,
+            "type":"eastern",
+            "item":"Mishti Doi",
+            "price":5
+
+        },
+        {
+            "id": 22,
+            "type":"eastern",
+            "item":"Litti Chokha",
+            "price":6
+
+        },
+        {
+            "id": 23,
+            "type":"eastern",
+            "item":"Thukpa",
+            "price":8
+
+        },
+        {
+            "id": 24,
+            "type":"eastern",
+            "item":"Dalma",
+            "price":5
+
+        }
+    ]
+}
