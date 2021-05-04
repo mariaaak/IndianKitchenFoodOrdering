@@ -19,6 +19,12 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,28 +66,47 @@ const ExploreAdd = () => {
     const [type, setType] = useState("");
     const [description, setDescription] = useState("");
     const [img, setImg] = useState("");
+    const [openSuccess, setOpenSuccess] = React.useState(false);
+    const [openFailure, setOpenFailure] = React.useState(false);
     const history = useHistory();
 
 
     async function add() {
 
-        let cuisine = { type, description, img }
-        
-        console.log(cuisine)
+        const formData = new FormData();
+        formData.append('img', img);
+        formData.append('type', type);
+        formData.append('description', description);
+
+        console.log(formData)
 
         let result = await fetch("http://localhost:8000/api/addCuisine", {
             method: 'POST',
-            body: JSON.stringify(cuisine),
-            headers: {
-                "Content-Type": 'application/json',
-                "Accept": 'application/json'
-
-            }
+            body: formData
         })
-
-        result = await result.json();
-        console.log(result)
+        if(result.status===200 || result.status===201)
+        {
+            setOpenSuccess(true);
+        }
+        else
+        {
+            setOpenFailure(false);
+        }
     }
+
+    const Upload = (e) => {
+        console.log("hello")
+        let file = e.target.files[0];
+        setImg(file);
+
+    }
+
+    const handleClose = (event, reason) => {
+        
+
+        setOpenSuccess(false);
+        setOpenFailure(false);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -110,8 +135,6 @@ const ExploreAdd = () => {
                         autoFocus
                     />
 
-
-
                     <TextField m={2}
                         variant="outlined"
                         margin="normal"
@@ -131,11 +154,12 @@ const ExploreAdd = () => {
                         <input
                             accept="image/*"
                             className={classes.input}
-                            id="contained-button-file"
+                            id="img"
                             multiple
                             type="file"
+                            onChange={(e) => Upload(e)}
                         />
-                        <label htmlFor="contained-button-file">
+                        <label htmlFor="img">
                             <Button variant="outlined" color="secondary" component="span">
                                 Upload
                             </Button>
@@ -155,6 +179,17 @@ const ExploreAdd = () => {
                     >
                         Add Cuisine
                     </Button>
+
+                    <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success">
+                            Cuisine Type Added !
+                                        </Alert>
+                    </Snackbar>
+                    <Snackbar open={openFailure} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="error">
+                            Failed !
+                        </Alert>
+                    </Snackbar>
 
                 </div>
             </div>

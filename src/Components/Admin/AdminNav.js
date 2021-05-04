@@ -26,6 +26,9 @@ import { withStyles } from '@material-ui/core/styles';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Link, Redirect, useHistory } from 'react-router-dom';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+
 
 const drawerWidth = 240;
 
@@ -91,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     logo: {
         fontSize: "20px"
     },
-    subitem:{
+    subitem: {
         paddingLeft: theme.spacing(4)
     }
 }));
@@ -101,11 +104,23 @@ const AdminNav = () => {
 
     const classes = useStyles();
     const theme = useTheme();
-
+    const history = useHistory();
     const [open, setOpen] = React.useState(false);
-    const [openItem,setOpenItem]=React.useState(false);
-    const [openExplore,setOpenExplore]=React.useState(false);
-    
+    const [openItem, setOpenItem] = React.useState(false);
+    const [openExplore, setOpenExplore] = React.useState(false);
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const openMenu = Boolean(anchorEl);
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+
     const handleItem = () => {
         setOpenItem(!openItem);
     };
@@ -114,7 +129,7 @@ const AdminNav = () => {
         setOpenExplore(!openExplore);
     };
 
-  
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -124,6 +139,13 @@ const AdminNav = () => {
     };
 
     const handleUser = () => {
+        if (localStorage.getItem('admin-info')) {
+            localStorage.removeItem('admin-info')
+            window.location.reload();
+        }
+        else {
+            history.push("/signin")
+        }
 
     }
 
@@ -155,15 +177,55 @@ const AdminNav = () => {
 
                     <Box>
                         <div>
-                            <IconButton aria-label="account" color="inherit">
+                            <IconButton aria-label="account" color="inherit" aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenu}>
                                 <AccountCircle />
                                 <div style={{ fontSize: "12px" }}>
                                     {
-                                        localStorage.getItem('admin-info') ? JSON.parse(localStorage.getItem('user-info')).name.toUpperCase() : null
+                                        localStorage.getItem('admin-info') ? JSON.parse(localStorage.getItem('admin-info')).name.toUpperCase() : null
                                     }
 
                                 </div>
                             </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={openMenu}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={handleClose}>
+                                    <ListItem onClick={handleUser}>
+                                        <ListItemIcon>{localStorage.getItem('admin-info') ? <ExitToAppIcon color="secondary" /> : <AccountCircle color="secondary" />}</ListItemIcon>
+                                        {
+                                            localStorage.getItem('admin-info') ?
+                                                <div>
+                                                    <Typography color="secondary">
+                                                        Log  Out
+                                                    </Typography>
+                                                </div>
+                                                :
+                                                <div>
+                                                    <Typography color="secondary">
+                                                        <Link to="/signin"></Link>
+                                                            Log  In
+                                                    </Typography>
+                                                </div>
+                                        }
+
+                                    </ListItem>
+                                </MenuItem>
+                            </Menu>
                         </div>
                     </Box>
 
@@ -185,29 +247,49 @@ const AdminNav = () => {
                 </div>
                 <Divider />
                 <List>
-
-                    <ListItem button>
-                        <ListItemIcon><MailIcon /></ListItemIcon>
-                        <ListItemText primary="View Customer" />
-                    </ListItem>
+                    <Link to="/admin/usersView" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon><MailIcon /></ListItemIcon>
+                            <ListItemText primary="View Customer" />
+                        </ListItem>
+                    </Link>
+                    <Link to="/admin/paymentView" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon><MailIcon /></ListItemIcon>
+                            <ListItemText primary="Transactions" />
+                        </ListItem>
+                    </Link>
+                    <Link to="/admin/reservationView" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon><MailIcon /></ListItemIcon>
+                            <ListItemText primary="Reservations" />
+                        </ListItem>
+                    </Link>
+                    <Link to="/admin/orders" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        <ListItem button>
+                            <ListItemIcon><MailIcon /></ListItemIcon>
+                            <ListItemText primary="Orders" />
+                        </ListItem>
+                    </Link>
                     <ListItem button onClick={handleItem}>
                         <ListItemIcon><MailIcon /></ListItemIcon>
                         <ListItemText primary="Items" />
                         {openItem ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={openItem} timeout="auto" unmountOnExit>
-                        <ListItem className={classes.subitem}>
-                            <ListItemIcon><MailIcon /></ListItemIcon>
-                            <ListItemText primary="Add Items" />
-                        </ListItem>
-                        <ListItem className={classes.subitem}>
-                            <ListItemIcon><MailIcon /></ListItemIcon>
-                            <ListItemText primary="View Items" />
-                        </ListItem>
-                        <ListItem className={classes.subitem}>
-                            <ListItemIcon><MailIcon /></ListItemIcon>
-                            <ListItemText primary="Delete Items" />
-                        </ListItem>
+                        <Link to="/admin/addItem" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <ListItem className={classes.subitem}>
+                                <ListItemIcon><MailIcon /></ListItemIcon>
+                                <ListItemText primary="Add Items" />
+                            </ListItem>
+                        </Link>
+
+                        <Link to="/admin/itemView" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <ListItem className={classes.subitem}>
+                                <ListItemIcon><MailIcon /></ListItemIcon>
+                                <ListItemText primary="View Items" />
+                            </ListItem>
+                        </Link>
                     </Collapse>
                     <ListItem button onClick={handleExplore}>
                         <ListItemIcon><MailIcon /></ListItemIcon>
@@ -215,27 +297,20 @@ const AdminNav = () => {
                         {openExplore ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={openExplore} timeout="auto" unmountOnExit>
-                        <ListItem className={classes.subitem}>
-                            <ListItemIcon><MailIcon /></ListItemIcon>
-                            <ListItemText primary="Add Explore" />
-                        </ListItem>
-                        <ListItem className={classes.subitem}>
-                            <ListItemIcon><MailIcon /></ListItemIcon>
-                            <ListItemText primary="View Explore" />
-                        </ListItem>
-                        <ListItem className={classes.subitem}>
-                            <ListItemIcon><MailIcon /></ListItemIcon>
-                            <ListItemText primary="Delete Explore" />
-                        </ListItem>
+                        <Link to="/admin/addExplore" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <ListItem className={classes.subitem}>
+                                <ListItemIcon><MailIcon /></ListItemIcon>
+                                <ListItemText primary="Add Explore" />
+                            </ListItem>
+                        </Link>
+                        <Link to="/admin/viewExplore" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <ListItem className={classes.subitem}>
+                                <ListItemIcon><MailIcon /></ListItemIcon>
+                                <ListItemText primary="View Explore" />
+                            </ListItem>
+                        </Link>
                     </Collapse>
-                    <ListItem button>
-                        <ListItemIcon><MailIcon /></ListItemIcon>
-                        <ListItemText primary="Transactions" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon><MailIcon /></ListItemIcon>
-                        <ListItemText primary="Orders" />
-                    </ListItem>
+
 
                 </List>
                 <Divider />
@@ -252,7 +327,7 @@ const AdminNav = () => {
                                 :
                                 <div>
                                     <Typography color="secondary">
-                                        <Link to="/login"></Link>
+                                        <Link to="/"></Link>
                                         Log  In
                                     </Typography>
                                 </div>

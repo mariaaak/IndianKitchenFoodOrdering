@@ -26,7 +26,10 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Context } from '../contexts/contextAPI';
 import { AuthContext } from '../contexts/AuthContext';
-import { Link,Redirect, useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+
 
 const drawerWidth = 240;
 
@@ -109,36 +112,43 @@ export default function PersistentDrawerLeft() {
   const [open, setOpen] = React.useState(false);
 
   const { cart } = useContext(Context);
-  //const { isauth,email,authenticate } = useContext(AuthContext);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
 
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleClose = () => {
+    setAnchorEl(null);
   };
+
 
   const handleClick = () => {
     history.push("/mycart")
   }
 
   const handleUser = () => {
-  
-    if(localStorage.getItem('user-info'))
-    {
+
+    if (localStorage.getItem('user-info')) {
       localStorage.removeItem('user-info')
       window.location.reload();
     }
-    else
-    {
+    else {
       history.push("/signin")
     }
   }
 
+  const handleUserSignUp = () => {
+
+   
+      history.push("/signup")
+
+  }
+
+
   return (
-    
+
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -149,15 +159,6 @@ export default function PersistentDrawerLeft() {
       >
         <Toolbar>
           <Box display='flex' flexGrow={1}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, open && classes.hide)}
-            >
-              <MenuIcon />
-            </IconButton>
             <div style={{ marginTop: 8 }} className={clsx(classes.logo, "header")}>
               Great Indian Kitchen
             </div>
@@ -174,7 +175,11 @@ export default function PersistentDrawerLeft() {
           </Box>
           <Box>
             <div>
-              <IconButton aria-label="account" color="inherit">
+              <IconButton aria-label="account" color="inherit" aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+              >
                 <AccountCircle />
                 <div style={{ fontSize: "12px" }}>
                   {
@@ -183,57 +188,66 @@ export default function PersistentDrawerLeft() {
 
                 </div>
               </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={openMenu}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>
+                  <ListItem onClick={handleUser}>
+                    <ListItemIcon>{localStorage.getItem('user-info') ? <ExitToAppIcon color="secondary" /> : <AccountCircle color="secondary" />}</ListItemIcon>
+                    {
+                      localStorage.getItem('user-info') ?
+                        <div>
+                          <Typography color="secondary">
+                            Log  Out
+                          </Typography>
+                        </div>
+                        :
+                        <div>
+                          <Typography color="secondary">
+                            <Link to="/signin"></Link>
+                              Log  In
+                          </Typography>
+                        </div>
+                    }
+
+                  </ListItem>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                  <ListItem onClick={handleUserSignUp}>
+                    <ListItemIcon>{localStorage.getItem('user-info') ? <ExitToAppIcon color="secondary" /> : <AccountCircle color="secondary" />}</ListItemIcon>
+                    {
+                      localStorage.getItem('user-info') ?
+                        <div>
+                        </div>
+                        :
+                        <div>
+                          <Typography color="secondary">
+                            <Link to="/signin"></Link>
+                              Sign Up
+                          </Typography>
+                        </div>
+                    }
+
+                  </ListItem>
+                </MenuItem>
+              </Menu>
             </div>
           </Box>
 
         </Toolbar>
       </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          {['Home', 'About', 'View Menu', 'Reserve Seat', 'View Profile'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          <ListItem button onClick={handleUser}>
-            <ListItemIcon>{localStorage.getItem('user-info') ? <ExitToAppIcon color="secondary" /> : <AccountCircle color="secondary" />}</ListItemIcon>
-            {
-              localStorage.getItem('user-info') ?
-                <div>
-                  <Typography color="secondary">
-                    Log  Out
-                  </Typography>
-                </div>
-                :
-                <div>
-                  <Typography color="secondary">
-                    <Link to="/login"></Link>
-                    Log  In
-                  </Typography>
-                </div>
-            }
-
-          </ListItem>
-        </List>
-      </Drawer>
 
     </div>
   );

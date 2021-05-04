@@ -55,10 +55,7 @@ const useStyles = makeStyles((theme) => ({
     reserve: {
         backgroundColor: "grey"
     },
-    root: {
-        minWidth: 275,
-
-    },
+   
     card_title: {
         fontSize: 14,
     },
@@ -80,27 +77,36 @@ const ReserveSeat = () => {
     const [phone, setPhone] = React.useState("");
     const [date, setDate] = React.useState("");
     const [time, setTime] = React.useState("");
+    const [status, setStatus] = React.useState("not confirmed");
     const [openSuccess, setOpenSuccess] = React.useState(false);
     const [openFailure, setOpenFailure] = React.useState(false);
 
-    const handleClick = () => {
+    async function handleClick() {
         
-        if(fname && email && lname && phone && date && time)
+        let name=fname+" "+lname;
+        let reserve={name,email,phone,date,time,status};
+
+        let result = await fetch('http://localhost:8000/api/makeReservation',{
+            method:"POST",
+            body:JSON.stringify(reserve),
+            headers:{
+                "Content-Type": 'application/json',
+                "Accept": 'application/json'
+
+            }
+        })
+        if(result.status===200 || result.status===201)
         {
-            console.log(time)
             setOpenSuccess(true);
         }
         else
         {
-            setOpenFailure(true);
+            setOpenFailure(false);
         }
     };
 
     const handleClose = (event, reason) => {
-        console.log(reason)
-        if (reason === 'clickaway') {
-            return;
-        }
+        
 
         setOpenSuccess(false);
         setOpenFailure(false);
@@ -109,13 +115,13 @@ const ReserveSeat = () => {
 
     const classes = useStyles();
     return (
-        <div className={classes.reserve}>
+        <div className={classes.reserve} id="reserve"> 
             <div className={clsx("header", classes.title)}>Reserve Your Seat</div>
             <Grid container>
                 <Grid item md={1}>
 
                 </Grid>
-                <Grid item xs={12} sm={6} md={5}>
+                <Grid item xs={12} sm={12} md={5}>
                 <Card className={clsx(classes.marginstyle, classes.root)} variant="outlined">
                     <CardContent>
                         <div className={clsx("header", classes.heading)}>Your Safety our Priority!   <FavoriteRoundedIcon color="secondary" /> </div>
@@ -132,7 +138,7 @@ const ReserveSeat = () => {
 
 
                 </Grid>
-                <Grid item xs={12} sm={6} md={5}>
+                <Grid item xs={12} sm={12} md={5}>
                     <div>
                         <form>
                             <Card className={clsx(classes.marginstyle, classes.root)} variant="outlined">

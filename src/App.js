@@ -12,16 +12,18 @@ import AdminNav from './Components/Admin/AdminNav';
 import ItemAdd from './Components/Admin/ItemAdd';
 import ItemView from './Components/Admin/ItemView';
 import ItemExplore from './Components/Admin/ExploreAdd';
+import Delivery from './Components/Delivery';
 import UsersView from './Components/Admin/UsersView';
+import ExploreView from './Components/Admin/ExploreView';
 import TransactionView from './Components/Admin/TransactionView';
+import ReservationConfirmation from './Components/Admin/ReservationConfirmation';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ContextProvider from './contexts/contextAPI';
-
+import Protected from './Components/ProtectedRoutes';
 
 function App() {
   return (
     <div className="App">
-
       <Router>
         <Switch>
           <Route path="/signin">
@@ -45,6 +47,13 @@ function App() {
               <Footer />
             </ContextProvider>
           </Route>
+          <Route path="/delivery">
+            <ContextProvider>
+              <NavBar />
+              <Delivery />
+              <Footer />
+            </ContextProvider>
+          </Route>
           <Route path="/menu/:type">
             <ContextProvider>
               <NavBar />
@@ -54,23 +63,34 @@ function App() {
           </Route>
           <Route path="/admin/addItem">
             <AdminNav />
-            <ItemAdd />
+            <Protected Cmp={ItemAdd} />
           </Route>
           <Route path="/admin/itemView">
             <AdminNav />
-            <ItemView />
+            <Protected Cmp={ItemView} />
           </Route>
           <Route path="/admin/addExplore">
             <AdminNav />
-            <ItemExplore />
+            <Protected Cmp={ItemExplore} />
+          </Route>
+          <Route path="/admin/viewExplore">
+            <AdminNav />
+            <Protected Cmp={ExploreView} />
           </Route>
           <Route path="/admin/paymentView">
             <AdminNav />
-            <TransactionView />
+            <Protected Cmp={TransactionView} />
           </Route>
           <Route path="/admin/usersView">
             <AdminNav />
-            <UsersView />
+            <Protected Cmp={UsersView} />
+          </Route>
+          <Route path="/admin/reservationView">
+            <AdminNav />
+            <Protected Cmp={ReservationConfirmation} />
+          </Route>
+          <Route path="/admin">
+            <AdminNav />
           </Route>
           <Route path="/">
             <ContextProvider>

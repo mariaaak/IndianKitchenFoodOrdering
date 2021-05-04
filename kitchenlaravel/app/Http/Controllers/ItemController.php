@@ -9,11 +9,15 @@ class ItemController extends Controller
 {
     function addItem(Request $req){
         $item = new Item;
-        $item->itemName=$req->name;
-        $item->itemType=$req->type;
-        $item->price=$req->price;
-        $item->avail=$req->avail;
-        $item->itemImage=$req->img;
+        $item->itemName=$req->input('name');
+        $item->itemType=$req->input('type');
+        $item->price=$req->input('price');
+        $item->avail=$req->input('avail');
+        if($req->hasFile('img')){
+            $item->itemImage=$req->file('img')->store('items');
+        }
+        
+        #$filename=$file->getClientOriginalName();
         $item->save();
 
         return $item;

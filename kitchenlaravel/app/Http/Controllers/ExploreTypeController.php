@@ -10,9 +10,9 @@ class ExploreTypeController extends Controller
     //
     function addExplore(Request $req){
         $explore=new ExploreType;
-        $explore->itemType=$req->type;
-        $explore->description=$req->description;
-        $explore->image=$req->image;
+        $explore->itemType=$req->input('type');
+        $explore->description=$req->input('description');
+        $explore->image=$req->file('img')->store('explore');
         $explore->save();
 
         return $explore;
@@ -20,15 +20,14 @@ class ExploreTypeController extends Controller
 
     function deleteExplore(Request $req){
     
-        $explore=ExploreType::find($req->id)->first();
-        
-        $explore->delete();
+        $explore=ExploreType::find($req->typeId)->delete();
+        $explore=ExploreType::all();
+        return $explore;
         
     }
 
     function viewExplore(){
         $explore=ExploreType::all();
-
         return $explore;
     }
 

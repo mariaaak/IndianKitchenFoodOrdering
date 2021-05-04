@@ -20,11 +20,17 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 
 const useStyles = makeStyles((theme) => ({
-    margin:{
-        marginTop:theme.spacing(2)
+    margin: {
+        marginTop: theme.spacing(2)
     },
     paper: {
         marginTop: theme.spacing(8),
@@ -61,8 +67,11 @@ const ItemAdd = () => {
     const [name, setName] = useState("");
     const [type, setType] = useState("south");
     const [price, setPrice] = useState("");
-    const [avail, setAvail] = useState(true);
+    const [avail, setAvail] = useState(1);
     const [img, setImg] = useState("");
+    const [openSuccess, setOpenSuccess] = React.useState(false);
+    const [openFailure, setOpenFailure] = React.useState(false);
+    const [types, setTypes] = React.useState([]);
     const history = useHistory();
 
     const handleChange = (event) => {
@@ -71,28 +80,60 @@ const ItemAdd = () => {
     };
 
     const handleChangeAvail = (event) => {
-        
+
         setAvail(event.target.value);
     };
 
-    
+    async function loadData() {
+        let result = await fetch("http://localhost:8000/api/viewCuisine", {
+            method: 'GET'
+        })
+        result = await result.json();
+        setTypes(result);
+        console.log(types)
+
+    }
+
+    useEffect(() => {
+        loadData();
+    }, [])
+
+
     async function add() {
 
-        let item = {name,type,price,avail,img}
-
+        const formData = new FormData();
+        formData.append('img', img);
+        formData.append('name', name);
+        formData.append('type', type);
+        formData.append('price', price);
+        formData.append('avail', avail);
 
         let result = await fetch("http://localhost:8000/api/addItem", {
             method: 'POST',
-            body: JSON.stringify(item),
-            headers: {
-                "Content-Type": 'application/json',
-                "Accept": 'application/json'
-
-            }
+            body: formData
         })
 
-        result = await result.json();
-        console.log(result)
+        if (result.status === 200 || result.status === 201) {
+            setOpenSuccess(true);
+        }
+        else {
+            setOpenFailure(false);
+        }
+
+    }
+
+    const handleClose = (event, reason) => {
+
+        setOpenSuccess(false);
+        setOpenFailure(false);
+    };
+
+
+    const Upload = (e) => {
+        console.log("hello")
+        let file = e.target.files[0];
+        setImg(file);
+
     }
 
     return (
@@ -134,57 +175,60 @@ const ItemAdd = () => {
                                 label="Availibilty"
                             >
 
-                                <MenuItem value={true}>Available</MenuItem>
-                                <MenuItem value={false}>Not Available</MenuItem>
+                                <MenuItem value={1}>Available</MenuItem>
+                                <MenuItem value={0}>Not Available</MenuItem>
                             </Select>
                         </FormControl>
 
                         <FormControl variant="outlined" className={classes.formControl}>
                             <InputLabel>Type</InputLabel>
                             <Select
-                                labelId="demo-simple-select-outlined-label"
+                                labelId="type"
                                 id="demo-simple-select-outlined"
                                 value={type}
                                 onChange={handleChange}
-                                label="Type"
-                            >
-
-                                <MenuItem value={"south"}>South</MenuItem>
-                                <MenuItem value={"north"}>North</MenuItem>
-                                <MenuItem value={"eastern"}>Eastern</MenuItem>
+                                label="Type">
+                                {
+                                    types.map((i) => (
+                                        
+                                        <MenuItem value={i.itemType}>{i.itemType}</MenuItem>
+                                     ))                              
+                                }
                             </Select>
                         </FormControl>
                     </Box>
 
-                    
-                        <TextField m={2}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="price"
-                            label="Price"
-                            type="text"
-                            id="price"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                        />
-                        <Box display="flex" justifyContent="flex-end">
 
-                            <input
-                                accept="image/*"
-                                className={classes.input}
-                                id="contained-button-file"
-                                multiple
-                                type="file"
-                            />
-                            <label htmlFor="contained-button-file">
-                                <Button variant="outlined" color="secondary" component="span">
-                                    Upload
-                            </Button>
-                            </label>
-                        </Box>
-                    
+                    <TextField m={2}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="price"
+                        label="Price"
+                        type="text"
+                        id="price"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                    />
+                    <Box display="flex" justifyContent="flex-end">
+
+                        <input
+                            accept="image/*"
+                            className={classes.input}
+                            id="img"
+                            name="img"
+                            multiple
+                            type="file"
+                            onChange={(e) => Upload(e)}
+                        />
+                        <label htmlFor="img">
+                            <Button variant="outlined" color="secondary" component="span">
+                                Upload
+                                </Button>
+                        </label>
+                    </Box>
+
 
 
 
@@ -198,6 +242,17 @@ const ItemAdd = () => {
                     >
                         Add Item
                     </Button>
+
+                    <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="success">
+                            Items Added !
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar open={openFailure} autoHideDuration={6000} onClose={handleClose}>
+                        <Alert onClose={handleClose} severity="error">
+                            Failed !
+                        </Alert>
+                    </Snackbar>
 
                 </div>
             </div>

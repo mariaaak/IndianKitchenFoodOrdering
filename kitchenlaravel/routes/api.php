@@ -7,7 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ExploreTypeController;
-
+use App\Http\Controllers\ReservationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -71,3 +71,15 @@ Route::post('deleteCuisine',[ExploreTypeController::class,'deleteExplore']);
 
 //View Cuisine
 Route::get('viewCuisine',[ExploreTypeController::class,'viewExplore']);
+
+
+//RESERVATION ROUTES
+
+//Make Reservation
+Route::post('makeReservation',[ReservationController::class,'makeReservation']);
+
+//View Reservation
+Route::get('viewReservation',[ReservationController::class,'viewReservation']);
+
+//Status Reservation
+Route::post('statusReservation',[ReservationController::class,'updateStatus']);

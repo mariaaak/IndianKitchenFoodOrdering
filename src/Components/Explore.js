@@ -17,9 +17,11 @@ import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
     root: {
-        maxWidth: 345,
+        maxWidth: 350,
         marginBottom: "20px",
-        marginTop: "20px"
+        marginTop: "20px",
+        marginLeft:"10px",
+        marginRight:"10px"
     },
     media: {
         height: 230,
@@ -136,12 +138,12 @@ const Explore = () => {
                     </Card>
 
                 </Grid>
-                <Grid item xs={0} md={1}>
+                <Grid item xs={0} sm={0} md={1}>
 
                 </Grid>
 
 
-                <Grid item xs={0} md={2}>
+                <Grid item xs={0} sm={0} md={2}>
 
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
@@ -224,7 +226,7 @@ const Explore = () => {
                     </Card>
 
                 </Grid>
-                <Grid item m={5} xs={0} md={1}>
+                <Grid item m={5} xs={0} sm={0} md={1}>
 
                 </Grid>
             </Grid>
@@ -236,16 +238,6 @@ const Explore = () => {
                     </Button>
 
             </Grid>
-
-
-
-
-
-
-
-
-
-
 
         </div>
 

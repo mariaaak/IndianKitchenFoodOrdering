@@ -43,6 +43,7 @@ export default function SignIn() {
     const history=useHistory();
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
+    const [admin,setAdmin]=useState(false);
 
     useEffect(()=>{
         if(localStorage.getItem('user-info'))
@@ -67,12 +68,20 @@ export default function SignIn() {
 
         result=await result.json();
         
-        if(result.email)
+        if(!result.admin)
         {
             localStorage.setItem('user-info',JSON.stringify(result))
             history.push("/");
         }
-        
+        else if(result.admin)
+        {
+            localStorage.setItem('admin-info',JSON.stringify(result))
+            history.push("/admin")
+        }
+        else
+        {
+            //Incorrect email or password
+        }
     }
 
     return (
